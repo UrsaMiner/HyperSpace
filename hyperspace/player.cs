@@ -6,21 +6,21 @@ public class Player{
         Landing currlanding = currstar.landings[0];
         string name = input("Name: ");
     }
-    static void sellShip(){
+    public void sellShip(){
         if (ship != null){
             money += ship.cost * 0.5;
             Console.WriteLine("You have sold your " + ship.category + ", " + ship.name + ".");
             ship = null;
         }
     }
-    static string grammarN(string name){
+    public string grammarN(string name){
         if (name[0] in ["a","e","i","o","u"])
             return string "n";
         else
             return string "";
         }
     }
-    static void sellOutfit(){
+    public void sellOutfit(){
         outfitname = input("Which outfit do you want to sell?\n").ToLower();
         success = 0;
         foreach (Outfit curroutfit in ship.outfits){
@@ -48,7 +48,7 @@ public class Player{
         }
     }
 
-    static void buyShip(){
+    public void buyShip(){
         success = 0
         shipname = input("Which ship do you want to buy?\n").ToLower()
         for i in range(len(allships)):
@@ -69,7 +69,7 @@ public class Player{
             Console.WriteLine("That ship doesn't exist.")
     }
 
-    static void buyOutfit(){
+    public void buyOutfit(){
         outfitname = input("Which outfit do you want to buy?\n").ToLower()
         success = 0
         for i in range(len(alloutfits)):
@@ -119,14 +119,14 @@ public class Player{
             Console.WriteLine("You have bought a" + grammarn + " " + outfittobuy.name + ".")
     }
 
-    static void renameShip(){
+    public void renameShip(){
         if (ship != null)
             ship.name = input("New Ship Name: ");
         else
             Console.WriteLine("You don't have a ship.");
     }
 
-    static void land(){
+    public void land(){
         if (currlanding == null){
             int success = 0
             landingname = input("Which landing do you want to land on?\n").ToLower()
@@ -145,7 +145,7 @@ public class Player{
             Console.WriteLine("You are already on a landing.");
     }
 
-    static void depart(){
+    public void depart(){
         if (currlanding != null){
             Console.WriteLine("You have departed from " + location.name + ".");
             currlanding = null;
@@ -153,7 +153,7 @@ public class Player{
             Console.WriteLine("You are not on a landing.");
     }
 
-    static void jump(){
+    public void jump(){
         if isinstance(location, Star):
             starname = input("Where would you like to jump to?\n").ToLower()
             success = 0
@@ -180,7 +180,7 @@ public class Player{
             Console.WriteLine("You must depart before jumping.");
     }
 
-    static void reputation(){
+    public void reputation(){
         facname = input("Which faction would you like to view?\n").ToLower()
         success = 0
         for i in range(len(allfactions)):
@@ -202,11 +202,11 @@ public class Player{
             Console.WriteLine("That faction doesn't exist.")
     }
 
-    static void balance(){
+    public void balance(){
         Console.WriteLine("You have " + str(money) + " credits.")
     }
 
-    static void viewShip(){
+    public void viewShip(){
         if ship == None:
             Console.WriteLine("You don't have a ship.")
         else:
@@ -224,7 +224,7 @@ public class Player{
                 Console.WriteLine(ship.outfits[i].name)
     }
 
-    static void help(){
+    public void help(){
         Console.WriteLine("""COMMANDS:
 Buy Ship (Req. Shipyard)
 Sell Ship (Req. Shipyard)
