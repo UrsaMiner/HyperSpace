@@ -11,11 +11,9 @@ public class Faction{
 
 public void defineFactions(){
     public List<Faction> allfactions = new List<Faction>();
-    /*
     allfactions.Add("Space Corp",80,{
-        Ship("Scouter")
+        Ship("Scouter",25,50,1,50000)
     },{
-        Engine("Light Engines")
+       Engine("Light Engine",10,2000,5)
     }
-    */
 }
