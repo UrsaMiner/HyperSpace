@@ -38,10 +38,3 @@ public class Weapon : Outfit{
         protected int power = inppower;
     }
 }
-
-
-
-public void defineShips(){
-    public List<Ship> allships = new List<Ship>();
-    allships.Add(Ship("Scouter",25,50,1,50000));
-}
