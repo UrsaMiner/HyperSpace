@@ -1,7 +1,8 @@
 class Player(){
     object ship = null;
     ulong money = 100000L;
-    object location = earth;
+    Star currstar = sol;
+    Landing currlanding = earth;
     string name = input("Name: ");
 
     static void sellShip(){
@@ -11,24 +12,27 @@ class Player(){
             ship = null;
         }
     }
-
+    static string grammarN(string name){
+        if (name[0] in ["a","e","i","o","u"])
+            return string "n";
+        else
+            return string "";
+        }
+    }
     static void sellOutfit(){
         outfitname = input("Which outfit do you want to sell?\n").ToLower();
         success = 0;
-        foreach (object curroutfit in alloutfits){
+        foreach (Outfit curroutfit in ship.outfits){
             if (curroutfit.name.ToLower() == outfitname){
                 object outfittosell = curroutfit;
                 success = 1;
             }
         }
         if (success){
-            if outfittosell in ship.outfits:
-                money += outfittosell.cost * 0.5
-                grammarn = ""
-                if outfittosell.name[0] in ["a","e","i","o","u"]:
-                    grammarn = "n"
-                Console.WriteLine("You have sold a" + grammarn + " " + outfittosell.name + ".")
-                ship.outfits.delete(outfittosell)
+            if (outfittosell in ship.outfits){
+                money += outfittosell.cost * 0.5;
+                Console.WriteLine("You have sold a" + grammarN(outfittosell.name) + " " + outfittosell.name + ".");
+                ship.outfits.delete(outfittosell);
                 ship.space[0] += outfittosell.space
                 if outfittosell.category == 1:
                     ship.weapon[0] += 1
@@ -36,6 +40,7 @@ class Player(){
                     ship.engine = 1
             else:
                 Console.WriteLine("You don't have that outfit installed.")
+        }
         else:
             Console.WriteLine("That outfit doesn't exist.")
         }
