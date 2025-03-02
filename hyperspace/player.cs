@@ -8,38 +8,38 @@ public class Player{
         string name = input("Name: ");
     }
     
-        void doAction(){
-            Console.WriteLine("\nWhat would you like to do?");
-            string action = Console.ReadLine().ToLower();
-            switch (action){
-                case "sell ship":
-                    sellShip();
-                case "sell outfit":
-                    sellOutfit();
-                case "buy ship":
-                    buyShip();
-                case "buy outfit":
-                    buyOutfit();
-                case "rename ship":
-                    renameShip();
-                case "land":
-                    land();
-                case "depart":
-                    depart();
-                case "jump":
-                    jump();
-                case "help":
-                    help();
-                case "reputation":
-                    reputation();
-                case "balance":
-                    balance();
-                case "ship":
-                    viewShip();
-                case "services":
-                    services();
-            }
+    void doAction(){
+        Console.WriteLine("\nWhat would you like to do?");
+        string action = Console.ReadLine().ToLower();
+        switch (action){
+            case "sell ship":
+                sellShip();
+            case "sell outfit":
+                sellOutfit();
+            case "buy ship":
+                buyShip();
+            case "buy outfit":
+                buyOutfit();
+            case "rename ship":
+                renameShip();
+            case "land":
+                land();
+            case "depart":
+                depart();
+            case "jump":
+                jump();
+            case "help":
+                help();
+            case "reputation":
+                reputation();
+            case "balance":
+                balance();
+            case "ship":
+                viewShip();
+            case "services":
+                services();
         }
+    }
     
     void sellShip(){
         if (ship != null){
@@ -54,16 +54,15 @@ public class Player{
             return string "n";
         else
             return string "";
-        }
     }
 
     void sellOutfit(){
         Console.WriteLine("Which outfit do you want to sell?\n");
         string outfitname = Console.ReadLine().ToLower();
         success = 0;
-        foreach (Outfit curroutfit in ship.outfits){
-            if (curroutfit.name.ToLower() == outfitname){
-                object outfittosell = curroutfit;
+        foreach (Outfit cycleoutfit in ship.outfits){
+            if (!success & scycleoutfit.name.ToLower() == outfitname){
+                object outfittosell = cycleoutfit;
                 success = 1;
             }
         }
@@ -87,7 +86,7 @@ public class Player{
     }
 
     void buyShip(){
-        if (currlanding != null && currlanding.shipyard){
+        if (currlanding != null & currlanding.shipyard){
             Console.WriteLine("Which ship do you want to buy?\n");
             success = 0;
             string shipname = Console.ReadLine.ToLower();
@@ -110,12 +109,12 @@ public class Player{
             Console.WriteLine("You can't do that here");
     }
     void buyOutfit(){
-        if (currlanding != null && currlanding.outfitter){
+        if (currlanding != null & currlanding.outfitter){
             Console.WriteLine("Which outfit do you want to buy?\n");
             string outfitname = console.ReadLine().ToLower()
             success = 0
             foreach (Outfit cycleoutfit in currzone.outfits){
-                if (cycleoutfit.name.ToLower() == outfitname)
+                if (cycleoutfit.name.ToLower() == outfitname){
                     outfittobuy = cycleoutfit;
                     success = 1;
                 }
@@ -157,15 +156,11 @@ public class Player{
                     Console.WriteLine("You don't have enough money.");
             } else
                 Console.WriteLine("You can't buy that here.");
-            if bought:
-                grammarn = ""
-                if outfittobuy.name[0] in ["a","e","i","o","u"]:
-                    grammarn = "n"
-                Console.WriteLine("You have bought a" + grammarn + " " + outfittobuy.name + ".")
+            if (bought)
+                Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".")
         } else
             Console.WriteLine("You can't do that here.");
     }
-
     void renameShip(){
         if (ship != null)
             Console.WriteLine("What should her new name be?\n");
@@ -278,7 +273,7 @@ public class Player{
         }
     }
 
-    void services()
+    void services(){
         if (currlanding != null){
             int hasnothing = 1;
             if (currlanding.shipyard){
@@ -293,8 +288,10 @@ public class Player{
                 Console.WriteLine("This Landing has no services.");
         else
             Console.WriteLine("You can't do that here.");
-            
-    void help()
+        }
+    }
+
+    void help(){
         Console.WriteLine("COMMANDS:");
         Console.WriteLine("Buy Ship (Req. Shipyard)\nSell Ship (Req. Shipyard)");
         Console.WriteLine("Buy Outfit (Req. Outfitter) Sell Outfit (Req. Outfitter)");
