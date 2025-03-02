@@ -1,14 +1,19 @@
-class Faction{
-    required string name;
-    required int reputation;
-    required object[] ships;
-    required object[] outfits;
+public class Faction{
+    public Faction(string inpname, int inpreputation, List<Ship> inpships, List<Outfit> inpoutfits){
+        string name = inpname;
+        int reputation = inpreputation;
+        List<Ship> ships = inpships;
+        List<Outfit> outfits = inpoutfits;
+    }
 }
 
 
-/*
-allfactions = []
 
-space_corp = Faction("Space Corp",80,[scouter],[engine_light])
-allfactions.append(space_corp)
-*/
+public void defineFactions(){
+    public List<Faction> allfactions = new List<Faction>();
+    allfactions.Add("Space Corp",80,{
+        Ship("Scouter",25,50,1,50000)
+    },{
+       Engine("Light Engine",10,2000,5)
+    }
+}
