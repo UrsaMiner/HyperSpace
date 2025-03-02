@@ -1,18 +1,17 @@
-class Ship(){
-    def __init__(self, category, name, mass, space, weapon, cost):
-        self.category = category # string "category"
-        self.name = name # string "name"
-        self.mass = mass # integer mass
-        self.space = [space, space] # 2x1 array of integers [space left, total space]
-        self.weapon = [weapon, weapon] # 2x1 array of integers [weapon slots left, total weapon slots]
-        self.engine = 1 # boolean does it have space for an engine?
-        self.outfits = [] # list of objects [outfit 1, outfit 2, ..., outfit n]
-        self.cost = cost # integer cost
+public class Ship{
+    public Ship(int inpspace) => public int[2] space = [inpspace, inpspace]; //space left, total space
+    public Ship(int inpweapon) => public int[2] weapon = [inpweapon, inpweapon]; //slots left, total slots
+    public Ship(int inpcost) => public int cost = inpcost;
+    public Ship(string inpcategory) => public string name = public string category = inpcategory;
+    public Ship(int inpmass) => public int mass = inpmass;
+    public int engine = 1; //1 is has space, 0 is doesnt
+    public List<Outfit> outfits = [];
 }
 
 
-
+/*
 allships = []
 
 scouter = Ship("Scouter","Scouter",25,50,1,50000)
 allships.append(scouter)
+*/
