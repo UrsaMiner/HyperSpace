@@ -6,21 +6,52 @@ public class Player{
         Landing currlanding = currstar.landings[0];
         string name = input("Name: ");
     }
-    public void sellShip(){
+        void doAction(){
+            string action = input("\nWhat would you like to do?\n").ToLower();
+            switch (action){
+                case "sell ship":
+                    sellShip();
+                case "sell outfit":
+                    sellOutfit();
+                case "buy ship":
+                    buyShip();
+                case "buy outfit":
+                    buyOutfit();
+                case "rename ship":
+                    renameShip();
+                case "land":
+                    land();
+                case "depart":
+                    depart();
+                case "jump":
+                    jump();
+                case "help":
+                    help();
+                case "reputation":
+                    reputation();
+                case "balance":
+                    balance();
+                case "ship":
+                    viewShip();
+                case "services":
+                    services();
+            }
+        }
+    void sellShip(){
         if (ship != null){
             money += ship.cost * 0.5;
             Console.WriteLine("You have sold your " + ship.category + ", " + ship.name + ".");
             ship = null;
         }
     }
-    public string grammarN(string name){
+    string grammarN(string name){
         if (name[0] in ["a","e","i","o","u"])
             return string "n";
         else
             return string "";
         }
     }
-    public void sellOutfit(){
+    void sellOutfit(){
         outfitname = input("Which outfit do you want to sell?\n").ToLower();
         success = 0;
         foreach (Outfit curroutfit in ship.outfits){
@@ -37,7 +68,7 @@ public class Player{
                 ship.space[0] += outfittosell.space;
                 if (outfittosell.category == 1){
                     ship.weapon[0] += 1;
-                } elif (outfittosell.category == 2){
+                } else if (outfittosell.category == 2){
                     ship.engine = 1;
                 }
             else
@@ -48,7 +79,7 @@ public class Player{
         }
     }
 
-    public void buyShip(){
+    void buyShip(){
         success = 0
         shipname = input("Which ship do you want to buy?\n").ToLower()
         for i in range(len(allships)):
@@ -69,7 +100,7 @@ public class Player{
             Console.WriteLine("That ship doesn't exist.")
     }
 
-    public void buyOutfit(){
+    void buyOutfit(){
         outfitname = input("Which outfit do you want to buy?\n").ToLower()
         success = 0
         for i in range(len(alloutfits)):
@@ -90,7 +121,7 @@ public class Player{
                                 bought = 1
                             else:
                                 Console.WriteLine("You don't have a free weapon slot.")
-                        elif outfittobuy.category == 2:
+                        else if outfittobuy.category == 2:
                             if ship.engine:
                                 money -= outfittobuy.cost
                                 ship.outfits.append(outfittobuy)
@@ -99,7 +130,7 @@ public class Player{
                                 bought = 1
                             else:
                                 Console.WriteLine("You already have an engine installed.")
-                        elif outfittobuy.category == 0:
+                        else if outfittobuy.category == 0:
                             money -= outfittobuy.cost
                             ship.outfits.append(outfittobuy)
                             ship.space[0] -= outfittobuy.space
@@ -119,14 +150,14 @@ public class Player{
             Console.WriteLine("You have bought a" + grammarn + " " + outfittobuy.name + ".")
     }
 
-    public void renameShip(){
+    void renameShip(){
         if (ship != null)
             ship.name = input("New Ship Name: ");
         else
-            Console.WriteLine("You don't have a ship.");
+            Console.WriteLine("You don't have a ship to rename.");
     }
 
-    public void land(){
+    void land(){
         if (currlanding == null){
             int success = 0
             landingname = input("Which landing do you want to land on?\n").ToLower()
@@ -140,20 +171,20 @@ public class Player{
                 currlanding = toland;
                 Console.WriteLine("Landing on " + location.name + ".");
             } else
-                Console.WriteLine("That either doesn't exist or is not in the current system.");
+                Console.WriteLine("You can't land there right now.");
         } else
-            Console.WriteLine("You are already on a landing.");
+            Console.WriteLine("You can't do that right now.");
     }
 
-    public void depart(){
+    void depart(){
         if (currlanding != null){
             Console.WriteLine("You have departed from " + location.name + ".");
             currlanding = null;
         } else
-            Console.WriteLine("You are not on a landing.");
+            Console.WriteLine("You can't do that right now.");
     }
 
-    public void jump(){
+    void jump(){
         if isinstance(location, Star):
             starname = input("Where would you like to jump to?\n").ToLower()
             success = 0
@@ -175,68 +206,79 @@ public class Player{
                 currstar = destination;
                 Console.WriteLine("You have jumped to " + location.name + ".");
             else:
-                Console.WriteLine("That system doesn't exist.");
+                Console.WriteLine("You can't jump there right now.");
         else:
-            Console.WriteLine("You must depart before jumping.");
+            Console.WriteLine("You can't do that right now.");
     }
 
-    public void reputation(){
+    void reputation(){
         facname = input("Which faction would you like to view?\n").ToLower()
         success = 0
-        for i in range(len(allfactions)):
-            if allfactions[i].name.ToLower() == facname:
-                success = 1
-                viewfaction = allfactions[i]
-        if success:
-            Console.WriteLine("Your reputation with " + viewfaction.name + " is at " + str(viewfaction.reputation) + "%")
-            match viewfaction.reputation:
-                case range(50,100):
-                    Console.WriteLine("You can purchase ships from them.")
-                case range(35,100):
-                    Console.WriteLine("You can purchase outfits from them.")
-                case range(25,100):
-                    Console.WriteLine("You can land on their landings.")
-                case range(0,10):
-                    Console.WriteLine("They are hostile towards you.")
-        else:
-            Console.WriteLine("That faction doesn't exist.")
+        foreach (Faction cyclefaction in allfactions){
+            if (cyclefaction.name.ToLower() == facname){
+                success = 1;
+                viewfaction = cyclefaction;
+            }
+        }
+        if (success){
+            Console.WriteLine("Your reputation with " + viewfaction.name + " is at " + str(viewfaction.reputation) + "%");
+            if (viewfaction.reputation <= 10)
+                Console.WriteLine("They are hostile towards you.");
+            if (viewfaction.reputation >= 50)
+                Console.WriteLine("You can purchase ships from them.");
+            if (viewfaction.reputation >= 35)
+                Console.WriteLine("You can purchase outfits from them.");
+            if (viewfaction.reputation >= 25)
+                Console.WriteLine("You can land on their landings.");
+        } else
+            Console.WriteLine("That faction doesn't exist.");
     }
 
-    public void balance(){
-        Console.WriteLine("You have " + str(money) + " credits.")
+    void balance(){
+        Console.WriteLine("You have " + str(money) + " credits.");
     }
 
-    public void viewShip(){
-        if ship == None:
-            Console.WriteLine("You don't have a ship.")
-        else:
+    void viewShip(){
+        if (ship == null)
+            Console.WriteLine("You don't have a ship.");
+        else {
             shipval = ship.cost
-            for i in range(len(ship.outfits)):
-                shipval += ship.outfits[i].cost
-            Console.WriteLine("Name: " + ship.name)
-            Console.WriteLine("Class: " + ship.category)
-            Console.WriteLine("Mass: " + str(ship.mass))
-            Console.WriteLine("Outfit Space: " + str(ship.space[0]) + "/" + str(ship.space[1]))
-            Console.WriteLine("Weapon Space: " + str(ship.weapon[0]) + "/" + str(ship.weapon[1]))
-            Console.WriteLine("Value: " + str(shipval) + " credits")
-            Console.WriteLine("OUTFITS:")
-            for i in range(len(ship.outfits)):
-                Console.WriteLine(ship.outfits[i].name)
+            foreach (Outfit cycleoutfit in ship.outfits){
+                shipval += cycleoutfit.cost;
+                Console.WriteLine("Name: " + ship.name);
+                Console.WriteLine("Class: " + ship.category);
+                Console.WriteLine("Mass: " + str(ship.mass));
+                Console.WriteLine("Outfit Space: " + str(ship.space[0]) + "/" + str(ship.space[1]));
+                Console.WriteLine("Weapon Space: " + str(ship.weapon[0]) + "/" + str(ship.weapon[1]));
+                Console.WriteLine("Value: " + str(shipval) + " credits");
+                Console.WriteLine("OUTFITS:");
+            }
+            foreach (Outfit cycleoutfit in ship.outfits)
+                Console.WriteLine(cycleoutfit.name);
+        }
     }
 
-    public void help(){
-        Console.WriteLine("""COMMANDS:
-Buy Ship (Req. Shipyard)
-Sell Ship (Req. Shipyard)
-Buy Outfit (Req. Outfitter)
-Sell Outfit (Req. Outfitter)
-Depart (Req. On landing)
-Land (Req. In system)
-Jump (Req. In system)
-Rename Ship
-Reputation
-Balance
-Ship
-Help""")
+
+    void services()
+        if (currlanding != null){
+            int hasnothing = 1;
+            if (currlanding.shipyard){
+                Console.WriteLine("This Landing has a shipyard.");
+                hasnothing = 0;
+            }
+            if (currlanding.outfitter){
+                Console.WriteLine("This Landing has an outfitter.");
+                hasnothing = 0;
+            }
+            if (hasnothing)
+                Console.WriteLine("This Landing has no services.");
+        else
+            Console.WriteLine("You can't do that right now.");
+    void help()
+        Console.WriteLine("COMMANDS:");
+        Console.WriteLine("Buy Ship (Req. Shipyard)\nSell Ship (Req. Shipyard)");
+        Console.WriteLine("Buy Outfit (Req. Outfitter) Sell Outfit (Req. Outfitter)");
+        Console.WriteLine("Services (Req. On landing)\nDepart (Req. On landing)\nLand (Req. In system)\nJump (Req. In system)");
+        Console.WriteLine("Rename Ship\nReputation\nBalance\nShip\nHelp");
     }
 }
