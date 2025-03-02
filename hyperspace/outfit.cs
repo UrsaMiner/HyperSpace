@@ -25,6 +25,8 @@ public class Weapon : Outfit{
     }
 }
 
+
+
 public void defineOutfits(){
     public List<Outfit> alloutfits = new List<Outfit>();
     alloutfits.Add(Engine("Light Engine",10,2000,5));
