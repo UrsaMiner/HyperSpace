@@ -1,7 +1,8 @@
 namespace HyperSpace{
     class Program{
-        void main(){
-            Game game = game();
+        static void Main(){
+            Game game = new();
+            game.run();
         }
     }
 }
