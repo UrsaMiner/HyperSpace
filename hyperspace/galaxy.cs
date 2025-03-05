@@ -7,11 +7,11 @@ namespace HyperSpace{
         public List<Ship> ships {get;}
         public List<Outfit> outfits {get;}
 
-        public Faction(string inpname, int inpreputation, List<Ship> inpships, List<Outfit> inpoutfits){
-            name = inpname;
-            reputation = inpreputation;
-            ships = inpships;
-            outfits = inpoutfits;
+        public Faction(string name, int reputation, List<Ship> ships, List<Outfit> outfits){
+            this.name = name;
+            this.reputation = reputation;
+            this.ships = ships;
+            this.outfits = outfits;
         }
     }
 
@@ -22,10 +22,10 @@ namespace HyperSpace{
         public int y {get;}
         public int z {get;}
 
-        public Coordinate(int tox, int toy, int toz){
-            x = tox;
-            y = toy;
-            z = toz;
+        public Coordinate(int x, int y, int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
     }
 
@@ -37,11 +37,11 @@ namespace HyperSpace{
         public Faction faction {get;}
         public List<Landing> landings {get;}
 
-        public System(string inpname, Coordinate inpcoordinates, Faction inpfaction, List<Landing> inplandings){
-            name = inpname;
-            coordinates = inpcoordinates;
-            faction = inpfaction;
-            landings = inplandings;
+        public System(string name, Coordinate coordinates, Faction faction, List<Landing> landings){
+            this.name = name;
+            this.coordinates = coordinates;
+            this.faction = faction;
+            this.landings = landings;
         }
     }
 
@@ -52,10 +52,10 @@ namespace HyperSpace{
         public bool shipyard {get;}
         public bool outfitter {get;}
 
-        public Landing(string inpname, bool inpshipyard, bool inpoutfitter){
-            name = inpname;
-            shipyard = inpshipyard;
-            outfitter = inpoutfitter;
+        public Landing(string name, bool shipyard, bool outfitter){
+            this.name = name;
+            this.shipyard = shipyard;
+            this.outfitter = outfitter;
         }
     }
 }

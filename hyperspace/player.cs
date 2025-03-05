@@ -306,8 +306,19 @@ namespace HyperSpace{
                     Console.WriteLine("Value: " + shipval.ToString() + " credits");
                     Console.WriteLine("OUTFITS:");
                 }
-                foreach (Outfit cycleoutfit in ship.outfits)
-                    Console.WriteLine(cycleoutfit.name + ": Cost: " + cycleoutfit.cost.ToString() + " Space: " + cycleoutfit.space.ToString());
+                Engine enginetemp;
+                Weapon weapontemp;
+                foreach (Outfit cycleoutfit in ship.outfits){
+                    string specialtext = "";
+                    if (cycleoutfit is Engine){
+                        enginetemp = (Engine)cycleoutfit;
+                        specialtext = " Thrust: " + enginetemp.thrust.ToString();
+                    } else if (cycleoutfit is Weapon) {
+                        weapontemp = (Weapon)cycleoutfit;
+                        specialtext = " Power: " + weapontemp.power.ToString();
+                    Console.WriteLine(cycleoutfit.name + ": Cost: " + cycleoutfit.cost.ToString() + " Space: " + cycleoutfit.space.ToString() + specialtext);
+                    }
+                }
             }
         }
 
