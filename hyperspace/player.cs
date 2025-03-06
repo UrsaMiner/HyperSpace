@@ -11,8 +11,50 @@ namespace HyperSpace{
         public Landing? currlanding = Game.allsystems[0].landings[0];
         public Faction currzone = Game.allfactions[0];
         public string name = "Unknown";
-        public Pronoun pronouns = new("They","Them","Their","Theirs","Themself");
+        public Pronoun pronouns = new("They","Them","Their","Theirs","Themself","They're");
 
+        //General
+        public string grammarN(string name){
+            if("aeiou".Contains(name[0])) return "n";
+            else return "";
+        }
+
+        public void doAction(){
+            Console.WriteLine("\nWhat would you like to do?");
+            string action = Console.ReadLine();
+            if (action != null) action = action.ToLower();
+            switch (action){
+                case "shipyard":
+                    if (currlanding != null & currlanding.shipyard)
+                    goShipyard();
+                    break;
+                case "outfitter":
+                    if (currlanding != null & currlanding.outfitter & ship != null)
+                    goOutfitter();
+                    break;
+                case "travel":
+                    travel();
+                    break;
+                case "info":
+                    info();
+                    break;
+                case "rename pilot":
+                    changeName();
+                    break;
+                case "change pronouns":
+                    changePronouns();
+                    break;
+                case "rename ship":
+                    renameShip();
+                    break;
+                case "help":
+                default:
+                    help();
+                    break;
+            }
+        }
+        
+        //Player Info Edits
         public void changeName(){
             Console.WriteLine("Name:\n");
             string testname = Console.ReadLine();
@@ -31,6 +73,7 @@ namespace HyperSpace{
                     pronouns.activepossessive = "his";
                     pronouns.passivepossessive = "his";
                     pronouns.reflective = "himself";
+                    pronouns.abbreviated = "he's";
                     break;
                 case "F":
                     pronouns.active = "she";
@@ -38,6 +81,7 @@ namespace HyperSpace{
                     pronouns.activepossessive = "her";
                     pronouns.passivepossessive = "hers";
                     pronouns.reflective = "herself";
+                    pronouns.abbreviated = "she's";
                     break;
                 default:
                     pronouns.active = "they";
@@ -45,212 +89,9 @@ namespace HyperSpace{
                     pronouns.activepossessive = "their";
                     pronouns.passivepossessive = "theirs";
                     pronouns.reflective = "themself";
+                    pronouns.abbreviated = "they're";
                     break;
             }
-        }
-
-        public void doAction(){
-            Console.WriteLine("\nWhat would you like to do?");
-            string action = Console.ReadLine();
-            if (action != null) action = action.ToLower();
-            switch (action){
-                case "sell ship":
-                    sellShip();
-                    break;
-                case "sell outfit":
-                    sellOutfit();
-                    break;
-                case "buy ship":
-                    buyShip();
-                    break;
-                case "buy outfit":
-                    buyOutfit();
-                    break;
-                case "rename ship":
-                    renameShip();
-                    break;
-                case "land":
-                    land();
-                    break;
-                case "depart":
-                    depart();
-                    break;
-                case "jump":
-                    jump();
-                    break;
-                case "rename pilot":
-                    changeName();
-                    break;
-                case "info":
-                    info();
-                    break;
-                case "help":
-                case "change pronouns":
-                    changePronouns();
-                    break;
-                default:
-                    help();
-                    break;
-            }
-        }
-        
-        public void travel(){
-            bool goback = false;
-            while (!goback){
-                if (currlanding != null){
-                    Console.WriteLine("Are you sure? (y/n)\n");
-                    string sureinp = Console.ReadLine();
-                    if (sureinp != null) sureinp = sureinp.ToLower();
-                    switch (sureinp){
-                        case "y":
-                        case "yes":
-                            depart();
-                            goback = true;
-                            break;
-                        default:
-                            goback = true;
-                            break;
-                    }
-                } else {
-                    Console.WriteLine("Jump or Land?\n");
-                    string cmd = Console.ReadLine();
-                    if (cmd != null) cmd = cmd.ToLower();
-                    switch (cmd){
-                        case "jump":
-                            jump();
-                            break;
-                        case "land":
-                            land();
-                            break;
-                        default:
-                            goback = true;
-                            break;
-                    }
-                }
-            }
-        }
-
-        public void sellShip(){
-            if (ship != null){
-                money += (ulong)(ship.cost * 0.5);
-                Console.WriteLine("You have sold your " + ship.category + ", " + ship.name + ".");
-                ship = null;
-            } else Console.WriteLine("You don't have a ship.");
-        }
-        
-        public string grammarN(string name){
-            if("aeiou".Contains(name[0])) return "n";
-            else return "";
-        }
-
-        public void sellOutfit(){
-            if (ship != null & currlanding != null){
-                if (currlanding.outfitter){
-                    Console.WriteLine("Which outfit do you want to sell?\n");
-                    string outfitname = Console.ReadLine();
-                    bool success = false;
-                    if (outfitname != null){
-                        outfitname = outfitname.ToLower();
-                        foreach (Outfit cycleoutfit in ship.outfits){
-                            if (!success & cycleoutfit.name.ToLower() == outfitname){
-                                Outfit outfittosell = cycleoutfit;
-                                success = true;
-                                money += (ulong)(outfittosell.cost * 0.5);
-                                Console.WriteLine("You have sold a" + grammarN(outfittosell.name) + " " + outfittosell.name + ".");
-                                ship.outfits.Remove(outfittosell);
-                                ship.space[0] += outfittosell.space;
-                                if (outfittosell.category == 1)
-                                    ship.weapon[0] += 1;
-                                else if (outfittosell.category == 2)
-                                    ship.engine = 1;
-                            }
-                        }
-                    }
-                    if (!success)
-                        Console.WriteLine("You don't have that outfit installed.");
-                } else
-                    Console.WriteLine("There isn't an outfitter here.");
-            } else
-                Console.WriteLine("You don't have a ship.");
-        }
-
-        public void buyShip(){
-            if (currlanding != null & currlanding.shipyard){
-                Console.WriteLine("Which ship do you want to buy?\n");
-                bool success = false;
-                string shipname = Console.ReadLine();
-                if (shipname != null){
-                    shipname = shipname.ToLower();
-                    foreach (Ship cycleship in currzone.ships){
-                        if (cycleship.name.ToLower() == shipname){
-                            Ship shiptobuy = cycleship;
-                            success = true;
-                            if (shiptobuy.cost <= money){
-                                money -= shiptobuy.cost;
-                                ship = shiptobuy;
-                                Console.WriteLine("You have bought a" + grammarN(shiptobuy.name) + " " + shiptobuy.name + ".");
-                            } else
-                                Console.WriteLine("You don't have enough money.");
-                        }
-                    }
-                }
-                if (!success)
-                    Console.WriteLine("You can't buy that here");
-            } else
-                Console.WriteLine("You can't do that here");
-        }
-
-        public void buyOutfit(){
-            if (currlanding != null & currlanding.outfitter){
-                Console.WriteLine("Which outfit do you want to buy?\n");
-                string outfitname = Console.ReadLine();
-                bool success = false;
-                if (outfitname != null){
-                    outfitname = outfitname.ToLower();
-                    foreach (Outfit cycleoutfit in currzone.outfits){
-                        if (cycleoutfit.name.ToLower() == outfitname){
-                            Outfit outfittobuy = cycleoutfit;
-                            success = true;
-                            if (outfittobuy.cost <= money){
-                                if (ship != null){
-                                    if (ship.space[0] >= outfittobuy.space){
-                                        if (outfittobuy.category == 1){
-                                            if (ship.weapon[0] != 0){
-                                                money -= outfittobuy.cost;
-                                                ship.outfits.Add(outfittobuy);
-                                                ship.space[0] -= outfittobuy.space;
-                                                ship.weapon[0] -= 1;
-                                                Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".");
-                                            } else
-                                                Console.WriteLine("You don't have a free weapon slot.");
-                                        } else if (outfittobuy.category == 2){
-                                            if (ship.engine != 0){
-                                                money -= outfittobuy.cost;
-                                                ship.outfits.Add(outfittobuy);
-                                                ship.space[0] -= outfittobuy.space;
-                                                ship.engine = 0;
-                                                Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".");
-                                            } else
-                                                Console.WriteLine("You already have an engine installed.");
-                                        } else if (outfittobuy.category == 0){
-                                            money -= outfittobuy.cost;
-                                            ship.outfits.Add(outfittobuy);
-                                            ship.space[0] -= outfittobuy.space;
-                                            Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".");
-                                            }
-                                        } else
-                                        Console.WriteLine("You don't have enough space.");
-                                } else
-                                    Console.WriteLine("You don't have a ship.");
-                            } else
-                                Console.WriteLine("You don't have enough money.");
-                        }
-                    }
-                }
-                if (!success)
-                    Console.WriteLine("You can't buy that here.");
-            } else
-                Console.WriteLine("You can't do that here.");
         }
 
         public void renameShip(){
@@ -263,6 +104,37 @@ namespace HyperSpace{
                 Console.WriteLine("You don't have a ship to rename.");
         }
 
+        //Travelling
+        public void travel(){
+            if (currlanding != null){
+                Console.WriteLine("Are you sure you want to depart from " + currlanding.name + "? (y/n)\n");
+                string sureinp = Console.ReadLine();
+                if (sureinp != null) sureinp = sureinp.ToLower();
+                switch (sureinp){
+                    case "y":
+                    case "yes":
+                        depart();
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                Console.WriteLine("Jump or Land?\n");
+                string cmd = Console.ReadLine();
+                if (cmd != null) cmd = cmd.ToLower();
+                switch (cmd){
+                    case "jump":
+                        jump();
+                        break;
+                    case "land":
+                        land();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        
         public void land(){
             bool success = false;
             Console.WriteLine("Which landing do you want to land on?\n");
@@ -311,7 +183,139 @@ namespace HyperSpace{
             if (!success)
                 Console.WriteLine("You can't jump there right now.");
         }
+        
+        //On Landing
+        public void goShipyard(){
+            if (ship != null){
+                Console.WriteLine("Are you sure? (Y/N)");
+                string sellconf = Console.ReadLine();
+                if (sellconf != null) sellconf = sellconf.ToLower();
+                if (sellconf == "y") sellShip();
+            } else 
+                buyShip();
+        }
+        
+        public void buyShip(){
+            Console.WriteLine("Which ship do you want to buy?\n");
+            bool success = false;
+            string shipname = Console.ReadLine();
+            if (shipname != null){
+                shipname = shipname.ToLower();
+                foreach (Ship cycleship in currzone.ships){
+                    if (cycleship.name.ToLower() == shipname){
+                        Ship shiptobuy = cycleship;
+                        success = true;
+                        if (shiptobuy.cost <= money){
+                            money -= shiptobuy.cost;
+                            ship = shiptobuy;
+                            Console.WriteLine("You have bought a" + grammarN(shiptobuy.name) + " " + shiptobuy.name + ".");
+                        } else
+                            Console.WriteLine("You don't have enough money.");
+                    }
+                }
+            }
+            if (!success)
+                Console.WriteLine("You can't buy that here");
+        }
 
+        public void sellShip(){
+            if (ship != null){
+                money += (ulong)(ship.cost * 0.5);
+                Console.WriteLine("You have sold your " + ship.category + ", " + ship.name + ".");
+                ship = null;
+            } else Console.WriteLine("You don't have a ship.");
+        }
+        
+        public void goOutfitter(){
+            Console.WriteLine("Buy or Sell?\n");
+            string cmd = Console.ReadLine();
+            if (cmd != null) cmd = cmd.ToLower();
+            switch (cmd){
+                case "buy":
+                    buyOutfit();
+                    break;
+                case "sell":
+                    sellOutfit();
+                    break;
+            }
+        }
+        
+        public void buyOutfit(){
+            Console.WriteLine("Which outfit do you want to buy?\n");
+            string outfitname = Console.ReadLine();
+            bool success = false;
+            if (outfitname != null){
+                outfitname = outfitname.ToLower();
+                foreach (Outfit cycleoutfit in currzone.outfits){
+                    if (cycleoutfit.name.ToLower() == outfitname){
+                        Outfit outfittobuy = cycleoutfit;
+                        success = true;
+                        if (outfittobuy.cost <= money){
+                            if (ship != null){
+                                if (ship.space[0] >= outfittobuy.space){
+                                    if (outfittobuy.category == 1){
+                                        if (ship.weapon[0] != 0){
+                                            money -= outfittobuy.cost;
+                                            ship.outfits.Add(outfittobuy);
+                                            ship.space[0] -= outfittobuy.space;
+                                            ship.weapon[0] -= 1;
+                                            Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".");
+                                        } else
+                                            Console.WriteLine("You don't have a free weapon slot.");
+                                    } else if (outfittobuy.category == 2){
+                                        if (ship.engine != 0){
+                                            money -= outfittobuy.cost;
+                                            ship.outfits.Add(outfittobuy);
+                                            ship.space[0] -= outfittobuy.space;
+                                            ship.engine = 0;
+                                            Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".");
+                                        } else
+                                            Console.WriteLine("You already have an engine installed.");
+                                    } else if (outfittobuy.category == 0){
+                                        money -= outfittobuy.cost;
+                                        ship.outfits.Add(outfittobuy);
+                                        ship.space[0] -= outfittobuy.space;
+                                        Console.WriteLine("You have bought a" + grammarN(outfittobuy.name) + " " + outfittobuy.name + ".");
+                                        }
+                                    } else
+                                    Console.WriteLine("You don't have enough space.");
+                            } else
+                                Console.WriteLine("You don't have a ship.");
+                        } else
+                            Console.WriteLine("You don't have enough money.");
+                    }
+                }
+            }
+            if (!success)
+                Console.WriteLine("You can't buy that here.");
+        }
+        
+        public void sellOutfit(){
+            Console.WriteLine("Which outfit do you want to sell?\n");
+            string outfitname = Console.ReadLine();
+            bool success = false;
+            if (outfitname != null){
+                outfitname = outfitname.ToLower();
+                foreach (Outfit cycleoutfit in ship.outfits){
+                    if (!success & cycleoutfit.name.ToLower() == outfitname){
+                        Outfit outfittosell = cycleoutfit;
+                        success = true;
+                        money += (ulong)(outfittosell.cost * 0.5);
+                        Console.WriteLine("You have sold a" + grammarN(outfittosell.name) + " " + outfittosell.name + ".");
+                        ship.outfits.Remove(outfittosell);
+                        ship.space[0] += outfittosell.space;
+                        if (outfittosell.category == 1)
+                            ship.weapon[0] += 1;
+                        else if (outfittosell.category == 2)
+                            ship.engine = 1;
+                    }
+                }
+            }
+            if (!success)
+                Console.WriteLine("You don't have that outfit installed.");
+        }
+
+        //Info
         public void info(){
             bool goback = false;
             while (!goback){
@@ -378,16 +382,15 @@ namespace HyperSpace{
                 Console.WriteLine("You don't have a ship.");
             else {
                 uint shipval = ship.cost;
-                foreach (Outfit cycleoutfit in ship.outfits){
+                foreach (Outfit cycleoutfit in ship.outfits)
                     shipval += cycleoutfit.cost;
-                    Console.WriteLine("Name: " + ship.name);
-                    Console.WriteLine("Class: " + ship.category);
-                    Console.WriteLine("Mass: " + ship.mass.ToString());
-                    Console.WriteLine("Outfit Space: " + ship.space[0].ToString() + "/" + ship.space[1].ToString());
-                    Console.WriteLine("Weapon Space: " + ship.weapon[0].ToString() + "/" + ship.weapon[1].ToString());
-                    Console.WriteLine("Value: " + shipval.ToString() + " credits");
-                    Console.WriteLine("OUTFITS:");
-                }
+                Console.WriteLine("Name: " + ship.name);
+                Console.WriteLine("Class: " + ship.category);
+                Console.WriteLine("Mass: " + ship.mass.ToString());
+                Console.WriteLine("Outfit Space: " + ship.space[0].ToString() + "/" + ship.space[1].ToString());
+                Console.WriteLine("Weapon Space: " + ship.weapon[0].ToString() + "/" + ship.weapon[1].ToString());
+                Console.WriteLine("Value: " + shipval.ToString() + " credits");
+                Console.WriteLine("OUTFITS:");
                 Engine enginetemp;
                 Weapon weapontemp;
                 foreach (Outfit cycleoutfit in ship.outfits){
@@ -422,17 +425,15 @@ namespace HyperSpace{
         }
 
         public void infoHelp(){
-            Console.WriteLine("Services (Req. On landing)");
+            if (currlanding != null) Console.WriteLine("Services");
             Console.WriteLine("Reputation\nBalance\nShip");
             Console.WriteLine("Back");
         }
 
         public void help(){
             Console.WriteLine("COMMANDS:");
-            Console.WriteLine("Buy Ship (Req. Shipyard)\nSell Ship (Req. Shipyard)");
-            Console.WriteLine("Buy Outfit (Req. Outfitter)\nSell Outfit (Req. Outfitter)");
-            Console.WriteLine("Depart (Req. On landing)\nLand (Req. In system)\nJump (Req. In system)");
-            Console.WriteLine("Rename Pilot\nChange Pronouns\nRename Ship\nInfo");
+            if (currlanding != null) Console.WriteLine("Shipyard\nOutfitter");
+            Console.WriteLine("Travel\nInfo\nRename Pilot\nChange Pronouns\nRename Ship\nHelp");
         }
     }
 }

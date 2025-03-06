@@ -74,12 +74,13 @@ namespace HyperSpace{
 
 
 
-    public class Pronoun(string active, string passive, string activepossessive, string passivepossessive, string reflective){
+    public class Pronoun(string active, string passive, string activepossessive, string passivepossessive, string reflective, string abbreviated){
         public string active = active;
         public string passive = passive;
         public string activepossessive = activepossessive;
         public string passivepossessive = passivepossessive;
         public string reflective = reflective;
+        public string abbreviated = abbreviated;
     }
 
 
