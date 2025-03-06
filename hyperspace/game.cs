@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 
 /*
 This is where new things are added for now
@@ -68,6 +69,38 @@ namespace HyperSpace{
                 new Landing("Mars",false,true)
             }));
 
+        }
+    }
+
+
+
+    public class Pronoun{
+        public string active;
+        public string passive;
+        public string activepossessive;
+        public string passivepossessive;
+        public string reflective;
+
+        public Pronoun(string active, string passive, string activepossessive, string passivepossessive, string reflective){
+            this.active = active;
+            this.passive = passive;
+            this.activepossessive = activepossessive;
+            this.passivepossessive = passivepossessive;
+            this.reflective = reflective;
+        }
+    }
+
+
+
+        public class Coordinate{
+        public int x {get;}
+        public int y {get;}
+        public int z {get;}
+
+        public Coordinate(int x, int y, int z){
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
     }
 }

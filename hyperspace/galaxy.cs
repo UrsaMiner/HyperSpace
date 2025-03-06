@@ -17,20 +17,6 @@ namespace HyperSpace{
 
 
 
-    public class Coordinate{
-        public int x {get;}
-        public int y {get;}
-        public int z {get;}
-
-        public Coordinate(int x, int y, int z){
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    }
-
-
-
     public class System{
         public string name {get;}
         public Coordinate coordinates {get;}

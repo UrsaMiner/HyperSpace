@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace HyperSpace{
     public class Player{
@@ -8,82 +10,137 @@ namespace HyperSpace{
         public System currsystem = Game.allsystems[0];
         public Landing? currlanding = Game.allsystems[0].landings[0];
         public Faction currzone = Game.allfactions[0];
-        public string name = "John Doe";
+        public string name = "Unknown";
+        public Pronoun pronouns = new("They","Them","Their","Theirs","Themself");
 
         public void changeName(){
             Console.WriteLine("Name:\n");
             string testname = Console.ReadLine();
-            if (testname != null){
-                name = testname;
+            if (testname != null) name = testname;
+            else name = "Unknown";
+        }
+
+        public void changePronouns(){
+            Console.WriteLine("Select Your Gender: (M/F/O)\n");
+            string gender = Console.ReadLine();
+            if (gender != null) gender = gender.ToLower();
+            switch(gender){
+                case "M":
+                    pronouns.active = "he";
+                    pronouns.passive = "him";
+                    pronouns.activepossessive = "his";
+                    pronouns.passivepossessive = "his";
+                    pronouns.reflective = "himself";
+                    break;
+                case "F":
+                    pronouns.active = "she";
+                    pronouns.passive = "her";
+                    pronouns.activepossessive = "her";
+                    pronouns.passivepossessive = "hers";
+                    pronouns.reflective = "herself";
+                    break;
+                default:
+                    pronouns.active = "they";
+                    pronouns.passive = "them";
+                    pronouns.activepossessive = "their";
+                    pronouns.passivepossessive = "theirs";
+                    pronouns.reflective = "themself";
+                    break;
             }
         }
-        
+
         public void doAction(){
             Console.WriteLine("\nWhat would you like to do?");
             string action = Console.ReadLine();
-            if (action != null){
-                action = action.ToLower();
-                switch (action){
-                    case "sell ship":
-                        sellShip();
-                        break;
-                    case "sell outfit":
-                        sellOutfit();
-                        break;
-                    case "buy ship":
-                        buyShip();
-                        break;
-                    case "buy outfit":
-                        buyOutfit();
-                        break;
-                    case "rename ship":
-                        renameShip();
-                        break;
-                    case "land":
-                        land();
-                        break;
-                    case "depart":
-                        depart();
-                        break;
-                    case "jump":
-                        jump();
-                        break;
-                    case "reputation":
-                        reputation();
-                        break;
-                    case "balance":
-                        balance();
-                        break;
-                    case "ship":
-                        viewShip();
-                        break;
-                    case "services":
-                        services();
-                        break;
-                    case "rename pilot":
-                        changeName();
-                        break;
-                    case "help":
-                    default:
-                        help();
-                        break;
-                }
+            if (action != null) action = action.ToLower();
+            switch (action){
+                case "sell ship":
+                    sellShip();
+                    break;
+                case "sell outfit":
+                    sellOutfit();
+                    break;
+                case "buy ship":
+                    buyShip();
+                    break;
+                case "buy outfit":
+                    buyOutfit();
+                    break;
+                case "rename ship":
+                    renameShip();
+                    break;
+                case "land":
+                    land();
+                    break;
+                case "depart":
+                    depart();
+                    break;
+                case "jump":
+                    jump();
+                    break;
+                case "rename pilot":
+                    changeName();
+                    break;
+                case "info":
+                    info();
+                    break;
+                case "help":
+                case "change pronouns":
+                    changePronouns();
+                    break;
+                default:
+                    help();
+                    break;
             }
         }
         
+        public void travel(){
+            bool goback = false;
+            while (!goback){
+                if (currlanding != null){
+                    Console.WriteLine("Are you sure? (y/n)\n");
+                    string sureinp = Console.ReadLine();
+                    if (sureinp != null) sureinp = sureinp.ToLower();
+                    switch (sureinp){
+                        case "y":
+                        case "yes":
+                            depart();
+                            goback = true;
+                            break;
+                        default:
+                            goback = true;
+                            break;
+                    }
+                } else {
+                    Console.WriteLine("Jump or Land?\n");
+                    string cmd = Console.ReadLine();
+                    if (cmd != null) cmd = cmd.ToLower();
+                    switch (cmd){
+                        case "jump":
+                            jump();
+                            break;
+                        case "land":
+                            land();
+                            break;
+                        default:
+                            goback = true;
+                            break;
+                    }
+                }
+            }
+        }
+
         public void sellShip(){
             if (ship != null){
                 money += (ulong)(ship.cost * 0.5);
                 Console.WriteLine("You have sold your " + ship.category + ", " + ship.name + ".");
                 ship = null;
-            }
+            } else Console.WriteLine("You don't have a ship.");
         }
         
         public string grammarN(string name){
-            if("aeiou".Contains(name[0]))
-                return "n";
-            else
-                return "";
+            if("aeiou".Contains(name[0])) return "n";
+            else return "";
         }
 
         public void sellOutfit(){
@@ -142,6 +199,7 @@ namespace HyperSpace{
             } else
                 Console.WriteLine("You can't do that here");
         }
+
         public void buyOutfit(){
             if (currlanding != null & currlanding.outfitter){
                 Console.WriteLine("Which outfit do you want to buy?\n");
@@ -194,6 +252,7 @@ namespace HyperSpace{
             } else
                 Console.WriteLine("You can't do that here.");
         }
+
         public void renameShip(){
             if (ship != null){
                 Console.WriteLine("What should her new name be?\n");
@@ -205,61 +264,84 @@ namespace HyperSpace{
         }
 
         public void land(){
-            if (currlanding == null){
-                bool success = false;
-                Console.WriteLine("Which landing do you want to land on?\n");
-                string landingname = Console.ReadLine();
-                if (landingname != null){
-                    landingname = landingname.ToLower();
-                    foreach(Landing cyclelanding in currsystem.landings){
-                        if (cyclelanding.name.ToLower() == landingname){
-                            Landing toland = cyclelanding;
-                            success = true;
-                            currlanding = toland;
-                            Console.WriteLine("Landing on " + currlanding.name + ".");
-                        }
+            bool success = false;
+            Console.WriteLine("Which landing do you want to land on?\n");
+            string landingname = Console.ReadLine();
+            if (landingname != null){
+                landingname = landingname.ToLower();
+                foreach(Landing cyclelanding in currsystem.landings){
+                    if (cyclelanding.name.ToLower() == landingname){
+                        Landing toland = cyclelanding;
+                        success = true;
+                        currlanding = toland;
+                        Console.WriteLine("Landing on " + currlanding.name + ".");
                     }
-                    if (!success)
-                        Console.WriteLine("You can't land there right now.");
                 }
-            } else
-                Console.WriteLine("You can't do that here.");
+            }
+            if (!success)
+                Console.WriteLine("You can't land there right now.");
         }
 
         public void depart(){
-            if (currlanding != null){
-                Console.WriteLine("You have departed from " + currlanding.name + ".");
-                currlanding = null;
-            } else
-                Console.WriteLine("You can't do that here.");
+            Console.WriteLine("You have departed from " + currlanding.name + ".");
+            currlanding = null;
         }
 
         public void jump(){
-            if (currlanding == null){
-                Console.WriteLine("Where would you like to jump to?\n");
-                string starname = Console.ReadLine();
-                bool success = false;
-                if (starname != null){
-                    starname = starname.ToLower();
-                    foreach (System cyclesystem in Game.allsystems){
-                        if (cyclesystem.name.ToLower() == starname){
-                            success = true;
-                            System destination = cyclesystem;
-                            /*
-                            distx = currsystem.coordinates.x - destination.coordinates.x
-                            disty = currsystem.coordinates.y - destination.coordinates.y
-                            distz = currsystem.coordinates.z - destination.coordinates.z
-                            dist = (distx + disty + distz) / 3
-                            */
-                            currsystem = destination;
-                            Console.WriteLine("You have jumped to " + currsystem.name + ".");
-                        }
+            Console.WriteLine("Where would you like to jump to?\n");
+            string starname = Console.ReadLine();
+            bool success = false;
+            if (starname != null){
+                starname = starname.ToLower();
+                foreach (System cyclesystem in Game.allsystems){
+                    if (cyclesystem.name.ToLower() == starname){
+                        success = true;
+                        System destination = cyclesystem;
+                        /*
+                        distx = currsystem.coordinates.x - destination.coordinates.x
+                        disty = currsystem.coordinates.y - destination.coordinates.y
+                        distz = currsystem.coordinates.z - destination.coordinates.z
+                        dist = (distx + disty + distz) / 3
+                        */
+                        currsystem = destination;
+                        Console.WriteLine("You have jumped to " + currsystem.name + ".");
                     }
                 }
-                if (!success)
-                    Console.WriteLine("You can't jump there right now.");
-            } else
-                Console.WriteLine("You can't do that here.");
+            }
+            if (!success)
+                Console.WriteLine("You can't jump there right now.");
+        }
+
+        public void info(){
+            bool goback = false;
+            while (!goback){
+                Console.WriteLine("What would you like to know about?\n");
+                string infotarget = Console.ReadLine();
+                if (infotarget != null){
+                    infotarget = infotarget.ToLower();
+                }
+                switch (infotarget){
+                    case "ship":
+                        viewShip();
+                        break;
+                    case "services":
+                        services();
+                        break;
+                    case "reputation":
+                        reputation();
+                        break;
+                    case "balance":
+                        balance();
+                        break;
+                    case "back":
+                        goback = true;
+                        break;
+                    case "help":
+                    default:
+                        infoHelp();
+                        break;
+                }
+            }
         }
 
         public void reputation(){
@@ -316,8 +398,8 @@ namespace HyperSpace{
                     } else if (cycleoutfit is Weapon) {
                         weapontemp = (Weapon)cycleoutfit;
                         specialtext = " Power: " + weapontemp.power.ToString();
-                    Console.WriteLine(cycleoutfit.name + ": Cost: " + cycleoutfit.cost.ToString() + " Space: " + cycleoutfit.space.ToString() + specialtext);
                     }
+                    Console.WriteLine(cycleoutfit.name + ": Cost: " + cycleoutfit.cost.ToString() + " Space: " + cycleoutfit.space.ToString() + specialtext);
                 }
             }
         }
@@ -335,17 +417,22 @@ namespace HyperSpace{
                 }
                 if (hasnothing)
                     Console.WriteLine("This Landing has no services.");
-            else
+            } else
                 Console.WriteLine("You can't do that here.");
-            }
+        }
+
+        public void infoHelp(){
+            Console.WriteLine("Services (Req. On landing)");
+            Console.WriteLine("Reputation\nBalance\nShip");
+            Console.WriteLine("Back");
         }
 
         public void help(){
             Console.WriteLine("COMMANDS:");
             Console.WriteLine("Buy Ship (Req. Shipyard)\nSell Ship (Req. Shipyard)");
-            Console.WriteLine("Buy Outfit (Req. Outfitter) Sell Outfit (Req. Outfitter)");
-            Console.WriteLine("Services (Req. On landing)\nDepart (Req. On landing)\nLand (Req. In system)\nJump (Req. In system)");
-            Console.WriteLine("Rename Pilot\nRename Ship\nReputation\nBalance\nShip\nHelp");
+            Console.WriteLine("Buy Outfit (Req. Outfitter)\nSell Outfit (Req. Outfitter)");
+            Console.WriteLine("Depart (Req. On landing)\nLand (Req. In system)\nJump (Req. In system)");
+            Console.WriteLine("Rename Pilot\nChange Pronouns\nRename Ship\nInfo");
         }
     }
 }
