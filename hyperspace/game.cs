@@ -74,33 +74,19 @@ namespace HyperSpace{
 
 
 
-    public class Pronoun{
-        public string active;
-        public string passive;
-        public string activepossessive;
-        public string passivepossessive;
-        public string reflective;
-
-        public Pronoun(string active, string passive, string activepossessive, string passivepossessive, string reflective){
-            this.active = active;
-            this.passive = passive;
-            this.activepossessive = activepossessive;
-            this.passivepossessive = passivepossessive;
-            this.reflective = reflective;
-        }
+    public class Pronoun(string active, string passive, string activepossessive, string passivepossessive, string reflective){
+        public string active = active;
+        public string passive = passive;
+        public string activepossessive = activepossessive;
+        public string passivepossessive = passivepossessive;
+        public string reflective = reflective;
     }
 
 
 
-        public class Coordinate{
-        public int x {get;}
-        public int y {get;}
-        public int z {get;}
-
-        public Coordinate(int x, int y, int z){
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
+    public class Coordinate(int x, int y, int z){
+        public int x { get; } = x;
+        public int y { get; } = y;
+        public int z { get; } = z;
     }
 }

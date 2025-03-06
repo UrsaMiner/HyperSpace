@@ -20,38 +20,22 @@ namespace HyperSpace{
 
 
 
-    public class Outfit{
-        public uint category {get;}
-        public string name {get;}
-        public uint space {get;}
-        public uint cost {get;}
-
-        public Outfit(uint category, string name, uint space, uint cost){
-            this.category = category; //(0-2, 0 is default, 1 is weapon, 2 is engine)
-            this.name = name;
-            this.space = space;
-            this.cost = cost;
-        }
+    public class Outfit(uint category, string name, uint space, uint cost){
+        public uint category { get; } = category; //(0-2, 0 is default, 1 is weapon, 2 is engine)
+        public string name { get; } = name;
+        public uint space { get; } = space;
+        public uint cost { get; } = cost;
     }
 
 
 
-    public class Engine : Outfit{
-        public uint thrust {get;}
-        public Engine(string name, uint space, uint cost, uint thrust) :
-        base(2, name, space, cost){
-            this.thrust = thrust;
-        }
+    public class Engine(string name, uint space, uint cost, uint thrust) : Outfit(2, name, space, cost){
+        public uint thrust { get; } = thrust;
     }
 
 
 
-    public class Weapon : Outfit{
-        public uint power {get;}
-
-        public Weapon(string name, uint space, uint cost, uint power) :
-        base(1, name, space, cost){
-            this.power = power;
-        }
+    public class Weapon(string name, uint space, uint cost, uint power) : Outfit(1, name, space, cost){
+        public uint power { get; } = power;
     }
 }
